@@ -59,7 +59,7 @@ function newDepartment() {
     userPrompts.addDepartment().then((response) => {
         let newDepartmentName = response.name;
         db.query("INSERT INTO department (department_name)VALUES (?)", newDepartmentName, (err, results) => {
-            console.log("ERROR: ", err);
+            console.log("\n Department was added!");
 
             init();
         });
@@ -73,8 +73,7 @@ function newRole() {
             let params = [response.title, response.salary, department_id];
 
             db.query("INSERT INTO roles (title, salary, department_id)VALUES (?,?,?)", params, (err, results) => {
-                console.log("ERROR: ", err);
-
+                console.log("\n Role was added!");
                 init();
             })
 
@@ -92,7 +91,8 @@ function newEmployee() {
 
                 let params = [response.first_name, response.last_name, roleId, managerId];
                 db.query("INSERT INTO employee(first_name, last_name, role_id, manager_id)VALUES (?,?,?,?)", params, function (err, results) {
-                    console.log("ERROR: ", err);
+                    console.log("\n Employee was added!");
+    
                     init();
                 })
             })
