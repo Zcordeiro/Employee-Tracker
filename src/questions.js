@@ -105,7 +105,8 @@ const addEmployee = () => {
             managerSelection.push(managerName);
         }
     });
-    
+
+
     return inquirer
         .prompt([
             {
@@ -136,18 +137,71 @@ const addEmployee = () => {
                 type: "list",
                 name: "role",
                 message: "What is this employee's role?",
-                choices: roleSelection,
+                choices: roleSelection
             },
             {
                 type: "list",
                 name: "eManager",
                 message: "Who is this employee's manager?",
-                choices: managerSelection,
+                choices: managerSelection
             }
 
         ])
-    
+
+}
+
+const updateRole = async () => {
+    let newRole = [];
+  let employeeList = [];
+
+  try {
+    const roles = await new Promise((resolve, reject) => {
+      db.query("SELECT * FROM roles", function (err, results) {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(results);
+        }
+      });
+    });
+
+    for (let i = 0; i < roles.length; i++) {
+      newRole.push(roles[i].title);
+    }
+
+    const employees = await new Promise((resolve, reject) => {
+      db.query("SELECT * FROM employee", function (err, results) {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(results);
+        }
+      });
+    });
+
+    for (let i = 0; i < employees.length; i++) {
+      let staffMember = `${employees[i].first_name} ${employees[i].last_name}`;
+      employeeList.push(staffMember);
+    }
+
+    return inquirer.prompt([
+      {
+        type: "list",
+        name: "staffMember",
+        message: "Who would you like to update?",
+        choices: employeeList,
+      },
+      {
+        type: "list",
+        name: "newRole",
+        message: "What role should this person be updated to?",
+        choices: newRole,
+      },
+    ]);
+  } catch (err) {
+    console.error(err);
+  }
 }
 
 
-module.exports = { initPrompt, addDepartment, addEmployee, addRole }
+module.exports = { initPrompt, addDepartment, addEmployee, addRole, updateRole }

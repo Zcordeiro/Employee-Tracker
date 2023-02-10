@@ -18,7 +18,7 @@
  ## Usage 
    Once you run node on the index file, it will prompt the user and create or show the appropriate departments, roles, and employees in their company.
 
-![Screenshot-generated-HTML](./assets/walkthrough.gif)
+![Screenshot-walkthrough-gif](./assets/walkthrough.gif)
 
  ## License 
   N/A
@@ -27,7 +27,7 @@
   N/A
 
  ## Screen Shot
- ![Screenshot-generated-HTML](./assets/screenshot.png)
+ ![Screenshot-generated-terminal-response](./assets/screenshot.png)
 
 # LINKS
 

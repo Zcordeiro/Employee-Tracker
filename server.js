@@ -29,12 +29,14 @@ function init() {
         if (data.mainChoice === 'View all roles') {
             db.query('SELECT * FROM roles', (err, results) => {
                 printTable(results);
+
                 init();
             });
         }
         if (data.mainChoice === 'View all employees') {
             db.query('SELECT * FROM employee', (err, results) => {
                 printTable(results);
+
                 init();
             });
         }
@@ -47,6 +49,9 @@ function init() {
         if (data.mainChoice === 'Add an employee') {
             newEmployee();
         }
+        if (data.mainChoice === 'Update an employee role') {
+            updateEmployee();
+        }
     })
 };
 
@@ -55,7 +60,7 @@ function newDepartment() {
         let newDepartmentName = response.name;
         db.query("INSERT INTO department (department_name)VALUES (?)", newDepartmentName, (err, results) => {
             console.log("ERROR: ", err);
-            console.log("Insert Result: ", results);
+
             init();
         });
     })
@@ -69,7 +74,7 @@ function newRole() {
 
             db.query("INSERT INTO roles (title, salary, department_id)VALUES (?,?,?)", params, (err, results) => {
                 console.log("ERROR: ", err);
-                console.log("Insert Result: ", results);
+
                 init();
             })
 
@@ -86,11 +91,31 @@ function newEmployee() {
                 let managerId = result[0].id;
 
                 let params = [response.first_name, response.last_name, roleId, managerId];
-                db.query("INSERT INTO employee(first_name, last_name, role_id, manager_id)VALUES (?,?,?,?)", params , function(err, results) {
+                db.query("INSERT INTO employee(first_name, last_name, role_id, manager_id)VALUES (?,?,?,?)", params, function (err, results) {
                     console.log("ERROR: ", err);
-                    console.log("Insert Result: ",results);
                     init();
-                } )
+                })
+            })
+        })
+    })
+}
+
+function updateEmployee() {
+    userPrompts.updateRole().then((response) => {
+        db.query("SELECT id FROM roles Where title = ?", response.newRole, (err, result) => {
+            let roleId = result[0].id;
+
+            db.query("SELECT id FROM employee WHERE employee.first_name = ? AND employee.last_name = ?;", response.staffMember.split(" "), (err, result) => {
+                let employeeId = result[0].id;
+
+                db.query("UPDATE employee SET role_id = ? WHERE id = ?", [roleId, employeeId], (err, result) => {
+                    console.log("\n Employee was updated!");
+                    db.query('SELECT * FROM employee', (err, results) => {
+                        printTable(results);
+                        init();
+                    });
+                    init();
+                })
             })
         })
     })
