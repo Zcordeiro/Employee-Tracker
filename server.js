@@ -5,7 +5,6 @@ const userPrompts = require("./src/questions");
 const PORT = process.env.PORT || 3001;
 const app = express();
 const { printTable } = require('console-table-printer');
-const { response } = require("express");
 
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
@@ -17,14 +16,10 @@ const db = mysql.createConnection(
         password: 'password',
         database: 'company_staff_db'
     },
-    console.log(`Connected to the company_staff_db database.`)
 );
-
-console.log(userPrompts);
 
 function init() {
     userPrompts.initPrompt().then((data) => {
-        console.log("Data: ", data);
         if (data.mainChoice === 'View all departments') {
             db.query('SELECT * FROM department', (err, results) => {
                 printTable(results);
@@ -39,7 +34,6 @@ function init() {
         }
         if (data.mainChoice === 'View all employees') {
             db.query('SELECT * FROM employee', (err, results) => {
-                console.log("ERROR: ", err);
                 printTable(results);
                 init();
             });
@@ -59,7 +53,6 @@ function init() {
 function newDepartment() {
     userPrompts.addDepartment().then((response) => {
         let newDepartmentName = response.name;
-        console.log(response.name);
         db.query("INSERT INTO department (department_name)VALUES (?)", newDepartmentName, (err, results) => {
             console.log("ERROR: ", err);
             console.log("Insert Result: ", results);
@@ -91,9 +84,8 @@ function newEmployee() {
 
             db.query("SELECT id FROM employee WHERE employee.first_name = ? AND employee.last_name = ?;", response.eManager.split(" "), (err, result) => {
                 let managerId = result[0].id;
-                
+
                 let params = [response.first_name, response.last_name, roleId, managerId];
-                console.log(params)
                 db.query("INSERT INTO employee(first_name, last_name, role_id, manager_id)VALUES (?,?,?,?)", params , function(err, results) {
                     console.log("ERROR: ", err);
                     console.log("Insert Result: ",results);
