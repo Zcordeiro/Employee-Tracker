@@ -112,12 +112,11 @@ function updateEmployee() {
                     console.log("\n Employee was updated!");
                     db.query('SELECT * FROM employee', (err, results) => {
                         printTable(results);
-                        init();
                     });
-                    init();
                 })
             })
         })
+    init();
     })
 }
 
